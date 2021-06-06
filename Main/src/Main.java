@@ -29,9 +29,39 @@ public class Main {
                 adjacency.get(v).add(u);
             }
 
-
         }
-    }
+
+       void getValidPath(int u, int v, boolean[] visited, Deque<Integer> path, List<List<Integer>> result) {
+           visited[u] = true;
+           path.add(u);
+           if (u == v)
+               result.add(new ArrayList<>(path));
+           else if (adjacency.get(u) != null)
+               for (Iterator iterator = adjacency.get(u).iterator() ; iterator.hasNext();) {
+                   Integer i = (Integer) iterator.next();
+                   if (!visited[i])
+                       getValidPath(i, v, visited, path, result);
+               }
+           path.removeLast();
+           visited[u] = false;
+       }
+
+       List<List<Integer>> findPath(int u, int v) {
+           List<List<Integer>> result = new ArrayList<>();
+           if (u == v) {
+               List<Integer> temp = new ArrayList<>();
+               temp.add(u);
+               result.add(temp);
+               return result;
+           }
+
+           boolean[] visited = new boolean[vertices.size()];
+           Deque<Integer> path = new ArrayDeque<>();
+           getValidPath(u, v, visited, path, result);
+           return result;
+       }
+
+   }
     public static void main(String[] args) {
         String fileName = "input.txt";
         String line = null;
@@ -55,7 +85,7 @@ public class Main {
                     b = (int)line.charAt(2);
                 }
                 System.out.println("CASE " + Case + ":");
-               // List<List<Integer>> results = g.getAllPaths(1, destination);
+                List<List<Integer>> results = g.findPath(1, destination);
 
             }
 
